@@ -1,21 +1,11 @@
+local view = require("lua.view")
+
 local M = {}
 
 local augroup = vim.api.nvim_create_augroup("Scrub", { clear = true })
 
-M.create_buffer = function()
-  local buf = vim.api.nvim_create_buf(true, true)
-
-  vim.api.nvim_buf_set_name(buf, "*scratch*")
-  vim.api.nvim_set_option_value("filetype", "lua", { buf = buf })
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "Hello from our plugin" })
-
-  vim.api.nvim_win_set_buf(0, buf)
-  return buf
-end
-
 M.main = function()
-  M.create_buffer()
-  print("Hello from our plugin")
+  view.view_buffer()
 end
 
 M.register_command = function()
