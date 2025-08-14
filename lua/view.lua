@@ -1,9 +1,8 @@
 local M = {}
 
 M.view_buffer = function()
-  local buf = vim.api.nvim_create_buf(true, true)
+  local buf = vim.api.nvim_create_buf(false, true)
 
-  vim.api.nvim_buf_set_name(buf, "scrub buffer")
   vim.api.nvim_win_set_buf(0, buf)
 
   M.populate_buffer(buf)
