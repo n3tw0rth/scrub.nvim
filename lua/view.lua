@@ -1,18 +1,24 @@
+local utils = require("lua.utils")
+
 local M = {}
 
+--- @return integer
 M.view_buffer = function()
   local buf = vim.api.nvim_create_buf(false, true)
-
+  -- vim.api.nvim_buf_set_name(buf, "Scrub")
   vim.api.nvim_win_set_buf(0, buf)
 
   M.populate_buffer(buf)
+
   return buf
 end
 
-
+--- @param buf integer
 M.populate_buffer = function(buf)
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, { "Hello from our plugin" })
-  local buffers = vim.api.nvim_list_bufs()
+  local ls = vim.split(vim.fn.execute("ls"), "\n")
+  for _, line in ipairs(ls) do
+    vim.api.nvim_buf_set_lines(buf, -1, -1, false, { utils.extract_file_name(line) })
+  end
 end
 
 return M
