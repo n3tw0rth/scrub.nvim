@@ -1,3 +1,4 @@
+local commands = require("lua.commands")
 local M = {}
 
 --- extracts the file name from the :ls output line
@@ -83,6 +84,19 @@ M.extract_all_from_ls = function(line)
   end
 
   return indicators
+end
+
+--- Get a table of lines from the :ls output
+--- @return table
+M.get_ls_lines = function()
+  return vim.split(commands.ls(), "\n")
+end
+
+--- find the buffer number from the :ls output line by the provided index
+--- @return number
+M.find_buffer_from_ls = function(index)
+  local ls = M.get_ls_lines()
+  return tonumber(M.extract_all_from_ls(ls[index])["buf_number"])
 end
 
 

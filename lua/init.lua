@@ -1,4 +1,5 @@
 local view = require("lua.view")
+local keymaps = require("lua.keymaps")
 
 local M = {}
 
@@ -8,13 +9,14 @@ M.main = function()
   view.view_buffer()
 end
 
-M.register_command = function()
+M.register = function()
   vim.api.nvim_create_user_command("Scrub", M.main, {})
+  keymaps.register_keymaps()
 end
 
 M.setup = function()
   vim.api.nvim_create_autocmd("VimEnter",
-    { group = augroup, desc = "Scrub.nvim setup", once = true, callback = M.register_command })
+    { group = augroup, desc = "Scrub.nvim setup", once = true, callback = M.register })
 end
 
 return { setup = M.setup }
