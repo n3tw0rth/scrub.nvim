@@ -1,4 +1,5 @@
 local commands = require("lua.commands")
+local constants = require("lua.constants")
 local M = {}
 
 --- extracts the file name from the :ls output line
@@ -14,74 +15,30 @@ end
 M.extract_all_from_ls = function(line)
   local tokens = {}
   local indicators = {}
-  --- split by whitespaces to get the tokens
-  --- then parse the token according to :help :ls
-  for token in string.gmatch(line, "%S+") do
-    table.insert(tokens, token)
-  end
+
+  local indicator_slice = string.sub(line, 1, 6)
+  local meta_slice = string.sub(line, 6, -1)
+  local meta_table = {}
 
   --- sets the default to prevent nil
   indicators["modifiable_off"] = false
   indicators["is_terminal"] = false
   indicators["modified"] = true
   indicators["has_errors"] = false
-  indicators["line"] = "1"
+  indicators["unlisted"] = false
+  indicators["is_cur_window"] = false
+  indicators["file"] = nil
+  indicators["buf_number"] = nil
+  indicators["line"] = nil
 
-  --- sometimes the block to indicate modifiable/readonly/terminal is missing
-  --- to make the logic aware of it check the tokens length and branch to a
-  --- different check with that additional block
-  if #tokens == 5 then
-    --- eg:  4 %a   ".editorconfig"                line 5
-    for index, token in ipairs(tokens) do
-      if index == 1 then
-        indicators["buf_number"] = token
-      elseif index == 2 then
-        indicators["is_cur_window"] = string.sub(token, 1, 1) == "%" and true or false
-        indicators["is_active"] = string.sub(token, 2, 2) == "a" and true or false
-      elseif index == 3 then
-        indicators["file"] = token:gsub('"', '')
-      elseif index == 5 then
-        indicators["line"] = token
-      end
-    end
-  elseif #tokens == 6 then
-    --- eg:  4 %a - ".editorconfig"                line 5
-    for index, token in ipairs(tokens) do
-      if index == 1 then
-        indicators["buf_number"] = token
-      elseif index == 2 then
-        indicators["is_cur_window"] = string.sub(token, 1, 1) == "%" and true or false
-        indicators["is_active"] = string.sub(token, 2, 2) == "a" and true or false
-      elseif index == 3 then
-        local char_1 = string.sub(token, 1, 1)
-        local char_2 = string.sub(token, 2, 2)
-        if char_1 == "-" then
-          indicators["modifiable_off"] = true
-        elseif char_1 == "=" then
-          indicators["readonly"] = true
-        elseif char_1 == "R" then
-          indicators["is_terminal"] = true
-          indicators["job_state"] = "running"
-        elseif char_1 == "F" then
-          indicators["is_terminal"] = true
-          indicators["job_state"] = "finished"
-        elseif char_1 == "F" then
-          indicators["is_terminal"] = true
-          indicators["job_state"] = "none"
-        end
+  indicators["buf_number"] = indicator_slice:match("%d+")
 
-        if char_2 == "+" then
-          indicators["modified"] = true
-        elseif char_2 == "x" then
-          indicators["has_errors"] = true
-        end
-      elseif index == 4 then
-        indicators["file"] = token:gsub('"', '')
-      elseif index == 6 then
-        indicators["line"] = token
-      end
-    end
+  for value in meta_slice:gmatch("%S+") do
+    table.insert(meta_table, value)
   end
+
+  indicators["file"] = meta_table[1]:gsub('"', "")
+  indicators["line"] = meta_table[3]
 
   return indicators
 end
@@ -92,11 +49,29 @@ M.get_ls_lines = function()
   return vim.split(commands.ls(), "\n")
 end
 
+--- Get a table of lines from the :ls! output
+--- @return table
+M.get_ls_all_lines = function()
+  return vim.split(commands.ls_all(), "\n")
+end
+
 --- find the buffer number from the :ls output line by the provided index
---- @return number
+--- @return number?
 M.find_buffer_from_ls = function(index)
   local ls = M.get_ls_lines()
   return tonumber(M.extract_all_from_ls(ls[index])["buf_number"])
+end
+
+--- find the buffer number from the :ls! output line by the provided index
+--- @return number?
+M.find_buffer_from_ls_by_name = function(name)
+  local ls = M.get_ls_all_lines()
+  for _, value in ipairs(ls) do
+    if value:match(name) then
+      local buf_number = tonumber(M.extract_all_from_ls(value)["buf_number"])
+      return buf_number
+    end
+  end
 end
 
 

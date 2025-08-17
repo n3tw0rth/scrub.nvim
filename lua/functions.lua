@@ -10,7 +10,7 @@ M.enter_buffer = function()
     --- FIXME: cursor_pos-1 is intentional. when writing buffer names to the scratch buffer
     --- a mysterious blank line appears, that cause the buff line to offset by 1
     local buffer = utils.find_buffer_from_ls(cursor_pos)
-    vim.api.nvim_set_current_buf(buffer)
+    helpers.focus_on_the_selected_buf(buffer)
   end
 end
 

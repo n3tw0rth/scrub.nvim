@@ -11,7 +11,6 @@ end
 
 M.register = function()
   vim.api.nvim_create_user_command("Scrub", M.main, {})
-  keymaps.register_keymaps()
 end
 
 M.setup = function()

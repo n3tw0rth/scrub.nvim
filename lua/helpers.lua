@@ -8,5 +8,18 @@ M.is_the_plugin_buffer = function()
   return string.match(cur_buf_name, constants.SCRATCH_BUFFER_NAME) ~= nil
 end
 
+---Focus to the selected buffer and line,
+---setting the line number is useful when restoring the buffers
+---@param buf number
+---@param line? number
+M.focus_on_the_selected_buf = function(buf, line)
+  vim.api.nvim_set_current_buf(buf)
+end
+
+
+M.reset_buffer = function(buf)
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, {})
+end
+
 
 return M
