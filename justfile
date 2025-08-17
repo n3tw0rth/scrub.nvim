@@ -1,2 +1,2 @@
 test:
-  busted --lua=lua
+  busted
