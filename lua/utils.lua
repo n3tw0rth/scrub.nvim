@@ -9,6 +9,20 @@ M.extract_file_name_from_ls = function(line)
   return line:match('"([^"]+)"')
 end
 
+--- Return a table of file names from the :ls output line
+--- @return string[]
+M.get_listed_buffers = function()
+  local ls = vim.split(commands.ls(), "\n")
+  local lines = {}
+  for _, line in ipairs(ls) do
+    local name = M.extract_file_name_from_ls(line)
+    if name ~= nil then
+      table.insert(lines, name)
+    end
+  end
+  return lines
+end
+
 --- extract all information from the :ls output line
 --- @param line string
 --- @return table

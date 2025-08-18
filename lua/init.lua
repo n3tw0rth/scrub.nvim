@@ -6,7 +6,7 @@ local M = {}
 local augroup = vim.api.nvim_create_augroup("Scrub", { clear = true })
 
 M.main = function()
-  view.view_buffer()
+  view.view_buffer(augroup)
 end
 
 M.register = function()

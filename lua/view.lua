@@ -3,6 +3,7 @@ local constants = require("lua.constants")
 local commands = require("lua.commands")
 local helpers = require("lua.helpers")
 local keymaps = require("lua.keymaps")
+local functions = require("lua.functions")
 
 local M = {}
 
@@ -15,6 +16,8 @@ M.create_the_buffer = function()
     -- name is used to prevent running actions on other buffers
     vim.api.nvim_buf_set_name(buf, constants.SCRATCH_BUFFER_NAME)
     vim.api.nvim_win_set_buf(0, buf)
+    vim.bo[buf].modifiable = true
+
     return buf
   else
     vim.api.nvim_set_current_buf(current_buf)
@@ -22,15 +25,20 @@ M.create_the_buffer = function()
   end
 end
 
+--- @param autocmd_group integer
 --- @return integer
-M.view_buffer = function()
+M.view_buffer = function(autocmd_group)
   local buf = M.create_the_buffer()
-  vim.bo[buf].buftype = 'nofile'
 
   M.populate_buffer(buf)
 
   --- Register it here as it requires the buf id
   keymaps.register_keymaps(buf)
+
+  --- Add a autocommand to the buffer to listen to :w
+  vim.api.nvim_create_autocmd("BufWritePre",
+    { buffer = buf, callback = functions.update_buffers, group = autocmd_group })
+
   return buf
 end
 
