@@ -45,9 +45,11 @@ end
 --- @param buf integer
 M.populate_buffer = function(buf)
   local ls = vim.split(commands.ls(), "\n")
+  table.remove(ls, 1) --- remove the 1st nil element
   helpers.reset_buffer(buf)
-  for _, line in ipairs(ls) do
-    vim.api.nvim_buf_set_lines(buf, -1, -1, false, { utils.extract_file_name_from_ls(line) })
+  for index, line in ipairs(ls) do
+    local name = utils.extract_file_name_from_ls(line)
+    vim.api.nvim_buf_set_lines(buf, index - 1, index - 1, false, { name })
   end
 end
 
