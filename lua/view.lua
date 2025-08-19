@@ -36,7 +36,7 @@ M.view_buffer = function(autocmd_group)
   keymaps.register_keymaps(buf)
 
   --- Add a autocommand to the buffer to listen to :w
-  vim.api.nvim_create_autocmd("BufWritePre",
+  vim.api.nvim_create_autocmd("BufWriteCmd",
     { buffer = buf, callback = functions.update_buffers, group = autocmd_group })
 
   return buf
