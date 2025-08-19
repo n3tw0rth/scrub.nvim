@@ -13,7 +13,10 @@ end
 ---@param buf number
 ---@param line? number
 M.focus_on_the_selected_buf = function(buf, line)
-  vim.api.nvim_set_current_buf(buf)
+  --- TODO: also set the cursor to the correct line number
+  if buf ~= nil then
+    vim.api.nvim_set_current_buf(buf)
+  end
 end
 
 
