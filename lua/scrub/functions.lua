@@ -30,6 +30,8 @@ M.update_buffers = function()
         end
       end
     end
+
+    utils.unload_buffer_if_empty(cur_buf)
   end
 end
 
