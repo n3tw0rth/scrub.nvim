@@ -1,4 +1,4 @@
-local constants = require("lua.constants")
+local constants = require("scrub.constants")
 local M = {}
 
 M.is_the_plugin_buffer = function()

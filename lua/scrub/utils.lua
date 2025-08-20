@@ -1,5 +1,5 @@
-local commands = require("lua.commands")
-local constants = require("lua.constants")
+local commands = require("scrub.commands")
+local constants = require("scrub.constants")
 local M = {}
 
 --- extracts the file name from the :ls output line

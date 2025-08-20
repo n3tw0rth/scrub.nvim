@@ -1,5 +1,5 @@
-local view = require("lua.view")
-local keymaps = require("lua.keymaps")
+local view = require("scrub.view")
+local keymaps = require("scrub.keymaps")
 
 local M = {}
 
@@ -18,4 +18,4 @@ M.setup = function()
     { group = augroup, desc = "Scrub.nvim setup", once = true, callback = M.register })
 end
 
-return { setup = M.setup }
+return M

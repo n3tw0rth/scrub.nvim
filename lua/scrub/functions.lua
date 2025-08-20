@@ -1,7 +1,7 @@
 --- to use with  keymaps and other user facing actions
-local helpers = require("lua.helpers")
-local utils = require("lua.utils")
-local commands = require("lua.commands")
+local helpers = require("scrub.helpers")
+local utils = require("scrub.utils")
+local commands = require("scrub.commands")
 local M = {}
 
 M.enter_buffer = function()

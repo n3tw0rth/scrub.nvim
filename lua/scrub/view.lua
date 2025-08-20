@@ -1,9 +1,9 @@
-local utils = require("lua.utils")
-local constants = require("lua.constants")
-local commands = require("lua.commands")
-local helpers = require("lua.helpers")
-local keymaps = require("lua.keymaps")
-local functions = require("lua.functions")
+local utils = require("scrub.utils")
+local constants = require("scrub.constants")
+local commands = require("scrub.commands")
+local helpers = require("scrub.helpers")
+local keymaps = require("scrub.keymaps")
+local functions = require("scrub.functions")
 
 local M = {}
 

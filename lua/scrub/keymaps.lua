@@ -1,6 +1,6 @@
-local utils = require("lua.utils")
-local helpers = require("lua.helpers")
-local functions = require("lua.functions")
+local utils = require("scrub.utils")
+local helpers = require("scrub.helpers")
+local functions = require("scrub.functions")
 local M = {}
 
 M.register_keymaps = function(buf)
