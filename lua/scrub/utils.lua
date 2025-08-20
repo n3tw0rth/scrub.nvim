@@ -89,4 +89,13 @@ M.find_buffer_from_ls_by_name = function(name)
 end
 
 
+M.unload_buffer_if_empty = function(buf)
+  local buf_lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+  if buf_lines[1] ~= nil then
+    vim.api.nvim_buf_delete(buf, { force = true })
+    vim.api.nvim_win_close(0, true) --- we shall close the current window as all the buffers are closed
+  end
+end
+
+
 return M
