@@ -24,5 +24,4 @@ M.reset_buffer = function(buf)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, {})
 end
 
-
 return M
