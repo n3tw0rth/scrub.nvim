@@ -99,7 +99,6 @@ end
 
 M.exit_scrub = function()
   local scrub_buf = M.find_buffer_from_ls_by_name(constants.SCRATCH_BUFFER_NAME)
-  vim.bo[scrub_buf].modifiable = false
   if scrub_buf ~= nil then
     vim.api.nvim_buf_delete(scrub_buf, { force = true })
   end
