@@ -52,10 +52,12 @@ M.populate_buffer = function(buf)
   helpers.reset_buffer(buf)
   for index, line in ipairs(ls) do
     local name = utils.extract_file_name_from_ls(line)
-    if name ~= nil then
-      vim.api.nvim_buf_set_lines(buf, index - 2, index - 1, false, { name })
+    if name ~= '' then
+      vim.api.nvim_buf_set_lines(buf, 0, 0, false, { name })
     end
   end
+  utils.remove_last_line(buf)
 end
+
 
 return M

@@ -104,4 +104,18 @@ M.exit_scrub = function()
   end
 end
 
+
+M.remove_last_line = function(buf)
+  local line_count = vim.api.nvim_buf_line_count(buf)
+
+  -- If only one line exists, do nothing (keeps that top line as-is)
+  if line_count <= 1 then
+    return
+  end
+
+  -- last line index is (n - 1). nvim_buf_set_lines uses [start, end) (end exclusive).
+  -- To delete the last line we delete the range (n-1, n).
+  vim.api.nvim_buf_set_lines(buf, line_count - 1, line_count, false, {})
+end
+
 return M
