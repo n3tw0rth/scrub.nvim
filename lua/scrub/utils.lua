@@ -118,4 +118,51 @@ M.remove_last_line = function(buf)
   vim.api.nvim_buf_set_lines(buf, line_count - 1, line_count, false, {})
 end
 
+
+---@param config DefaultConfig
+---@param save_file_path? string
+M.save_buffers = function(config, save_file_path)
+  local cwd = vim.fn.getcwd()
+  local ls = commands.ls()
+
+  save_file_path = save_file_path or ("/tmp/" .. "scrub.lua")
+
+  local data = dofile(save_file_path) or {}
+  local file = io.open(save_file_path, 'w')
+
+  data[cwd] = vim.inspect(ls)
+
+  if file ~= nil then
+    file:write("return " .. vim.inspect(data))
+    file:close()
+  end
+end
+
+---@param config DefaultConfig
+---@param save_file_path? string
+M.restore_buffers = function(config, save_file_path)
+  save_file_path = save_file_path or ("/tmp/" .. "scrub.lua")
+  local data = dofile(save_file_path)
+
+  local cwd = vim.fn.getcwd()
+
+  local cur_data = data[cwd]
+
+  cur_data = cur_data:gsub("^'(.*)'$", "%1")
+
+  local lines = {}
+  for line in cur_data:gmatch("(.-)\\n") do
+    table.insert(lines, line)
+  end
+  local last = cur_data:match("\\n(.*)$")
+  if last then
+    table.insert(lines, last)
+  end
+
+  for _, line in ipairs(lines) do
+    local indicators = M.extract_all_from_ls(line)
+    print(indicators["line"])
+  end
+end
+
 return M
