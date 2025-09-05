@@ -24,9 +24,9 @@ M.update_buffers = function()
     --- here concatenate the table and check if the value exists in the string
     for _, buf in ipairs(cur_bufs) do
       if string.find(table.concat(buf_lines, " "), buf) == nil then
-        local buf_number = utils.find_buffer_from_ls_by_name(buf)
-        if buf_number ~= nil then
-          vim.api.nvim_buf_delete(buf_number, { force = true })
+        local bufnr = utils.find_buffer_from_ls_by_name(buf)
+        if bufnr ~= nil then
+          vim.api.nvim_buf_delete(bufnr, { force = true })
         end
       end
     end
