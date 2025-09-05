@@ -1,4 +1,17 @@
-## What's Changed
+## What's Changed in v1.0.1
+* feat(persist): save and restore by @n3tw0rth in [#15](https://github.com/n3tw0rth/scrub.nvim/pull/15)
+* fix(bug): fix a bug by @n3tw0rth
+* wip(persist): changes to persist buffers by @n3tw0rth
+* wip(persist): save and restore buffers by @n3tw0rth
+* fix(test): fix tests by @n3tw0rth in [#13](https://github.com/n3tw0rth/scrub.nvim/pull/13)
+* fix(bug): additional blank line on scratch buf by @n3tw0rth in [#12](https://github.com/n3tw0rth/scrub.nvim/pull/12)
+* fix(bug): additional blank line on scratch buf by @n3tw0rth
+* chore(doc): update the readme.md by @n3tw0rth
+
+**Full Changelog**: https://github.com/n3tw0rth/scrub.nvim/compare/v1.0.0...v1.0.1
+
+## What's Changed in v1.0.0
+* chore(doc): add git-cliff and changelog by @n3tw0rth
 * fix(buffer): fix issues with buffer on exit by @n3tw0rth
 * chore(doc): added the logo by @n3tw0rth
 * improv(core): closes buffers all buffers are closed by @n3tw0rth in [#8](https://github.com/n3tw0rth/scrub.nvim/pull/8)
