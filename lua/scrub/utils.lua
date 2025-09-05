@@ -30,15 +30,17 @@ end
 M.extract_all_from_ls = function(line)
   local indicators = {}
 
-  -- sample line: '  3 h    "lua/scrub/view.lua"           line 51'
-  local bufnr, flags, file, lnum =
-      line:match('^%s*(%d+)%s+([%a%%#]*)%s+"([^"]+)"%s+line%s+(%d+)')
+  -- split into: [bufnr] [flags...] "name" line [num]
+  local bufnr, rest, name, lnum =
+      line:match('^%s*(%d+)%s*(.-)%s+"([^"]+)"%s+line%s+(%d+)')
 
   if bufnr then
+    -- clean flags (remove extra spaces)
+    local flags = rest:gsub("%s+", "")
     indicators = {
       bufnr = tonumber(bufnr),
-      flags = flags, -- e.g. "%a", "h", "#"
-      file  = file,  -- filename
+      flags = flags, -- e.g. "u%a+", "%a+", "%a", etc.
+      file  = name,
       line  = tonumber(lnum),
     }
   end
@@ -71,7 +73,8 @@ M.find_buffer_from_ls_by_name = function(name)
   local ls = M.get_ls_all_lines()
   for _, value in ipairs(ls) do
     if value:match(name) then
-      local bufnr = tonumber(M.extract_all_from_ls(value)["bufnr"])
+      local indicators = M.extract_all_from_ls(value)
+      local bufnr = indicators["bufnr"]
       return bufnr
     end
   end
