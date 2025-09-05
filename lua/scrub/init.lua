@@ -50,8 +50,8 @@ M.setup = function(config)
         utils.save_buffers(config)
       end
     })
-    -- vim.api.nvim_create_autocmd("VimEnter",
-    --   { group = augroup, desc = "Restore buffers", callback = utils.restore_buffers })
+    vim.api.nvim_create_autocmd("VimEnter",
+      { group = augroup, desc = "Restore buffers", callback = utils.restore_buffers })
   end
 end
 

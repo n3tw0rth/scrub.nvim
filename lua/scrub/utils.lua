@@ -28,32 +28,20 @@ end
 --- @param line string
 --- @return table
 M.extract_all_from_ls = function(line)
-  local tokens = {}
   local indicators = {}
 
-  local indicator_slice = string.sub(line, 1, 6)
-  local meta_slice = string.sub(line, 6, -1)
-  local meta_table = {}
+  -- sample line: '  3 h    "lua/scrub/view.lua"           line 51'
+  local bufnr, flags, file, lnum =
+      line:match('^%s*(%d+)%s+([%a%%#]*)%s+"([^"]+)"%s+line%s+(%d+)')
 
-  --- sets the default to prevent nil
-  indicators["modifiable_off"] = false
-  indicators["is_terminal"] = false
-  indicators["modified"] = true
-  indicators["has_errors"] = false
-  indicators["unlisted"] = false
-  indicators["is_cur_window"] = false
-  indicators["file"] = nil
-  indicators["buf_number"] = nil
-  indicators["line"] = nil
-
-  indicators["buf_number"] = indicator_slice:match("%d+")
-
-  for value in meta_slice:gmatch("%S+") do
-    table.insert(meta_table, value)
+  if bufnr then
+    indicators = {
+      bufnr = tonumber(bufnr),
+      flags = flags, -- e.g. "%a", "h", "#"
+      file  = file,  -- filename
+      line  = tonumber(lnum),
+    }
   end
-
-  indicators["file"] = meta_table[1]:gsub('"', "")
-  indicators["line"] = meta_table[3]
 
   return indicators
 end
@@ -74,7 +62,7 @@ end
 --- @return number?
 M.find_buffer_from_ls = function(index)
   local ls = M.get_ls_lines()
-  return tonumber(M.extract_all_from_ls(ls[index])["buf_number"])
+  return tonumber(M.extract_all_from_ls(ls[index])["bufnr"])
 end
 
 --- find the buffer number from the :ls! output line by the provided index
@@ -83,8 +71,8 @@ M.find_buffer_from_ls_by_name = function(name)
   local ls = M.get_ls_all_lines()
   for _, value in ipairs(ls) do
     if value:match(name) then
-      local buf_number = tonumber(M.extract_all_from_ls(value)["buf_number"])
-      return buf_number
+      local bufnr = tonumber(M.extract_all_from_ls(value)["bufnr"])
+      return bufnr
     end
   end
 end
@@ -126,15 +114,32 @@ M.save_buffers = function(config, save_file_path)
   local ls = commands.ls()
 
   save_file_path = save_file_path or ("/tmp/" .. "scrub.lua")
+  local file_exists = helpers.ensure_file(save_file_path)
 
-  local data = dofile(save_file_path) or {}
-  local file = io.open(save_file_path, 'w')
+  if file_exists then
+    local data = dofile(save_file_path) or {}
+    local file = io.open(save_file_path, 'w')
 
-  data[cwd] = vim.inspect(ls)
+    data[cwd] = vim.inspect(ls)
 
-  if file ~= nil then
-    file:write("return " .. vim.inspect(data))
-    file:close()
+    if file ~= nil then
+      file:write("return " .. vim.inspect(data))
+      file:close()
+    end
+  end
+end
+
+---Create a new buffer from the indicators
+---@param indicators table
+M.create_buf_from_indicators = function(indicators)
+  --- NOTE: buffers will be always  listed as we only want to restore the buffers shown on :ls
+  --- and also not scratch buffers, as chagnes on those are not saved and cannot recover again
+  if (indicators["file"] ~= nil) then
+    local buf = vim.api.nvim_create_buf(true, false)
+    vim.api.nvim_buf_set_name(buf, indicators["file"])
+    vim.api.nvim_buf_call(buf, function()
+      vim.cmd("silent edit")
+    end)
   end
 end
 
@@ -142,6 +147,11 @@ end
 ---@param save_file_path? string
 M.restore_buffers = function(config, save_file_path)
   save_file_path = save_file_path or ("/tmp/" .. "scrub.lua")
+
+  if not helpers.ensure_file(save_file_path) then
+    return
+  end
+
   local data = dofile(save_file_path)
 
   local cwd = vim.fn.getcwd()
@@ -150,18 +160,13 @@ M.restore_buffers = function(config, save_file_path)
 
   cur_data = cur_data:gsub("^'(.*)'$", "%1")
 
-  local lines = {}
-  for line in cur_data:gmatch("(.-)\\n") do
-    table.insert(lines, line)
-  end
-  local last = cur_data:match("\\n(.*)$")
-  if last then
-    table.insert(lines, last)
-  end
+  local lines = vim.split(cur_data, "\\n")
 
   for _, line in ipairs(lines) do
     local indicators = M.extract_all_from_ls(line)
-    print(indicators["line"])
+    if indicators["file"] ~= nil then
+      M.create_buf_from_indicators(indicators)
+    end
   end
 end
 
