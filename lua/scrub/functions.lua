@@ -1,15 +1,19 @@
---- to use with  keymaps and other user facing actions
 local helpers = require("scrub.helpers")
 local utils = require("scrub.utils")
-local commands = require("scrub.commands")
 local M = {}
 
+--- Used with :ScrubEnter.
+--- Based on the cursor position, this method will focus on the selected buffer
 M.enter_buffer = function()
   if helpers.is_the_plugin_buffer() then
-    local cursor_pos = vim.api.nvim_win_get_cursor(0)[1] + 1
+    --- get the cursor position on the scrub buffer
+    local cursor_pos = vim.api.nvim_win_get_cursor(0)[1]
+    local line       = vim.api.nvim_buf_get_lines(0, cursor_pos - 1, cursor_pos, true)[1]
+    local buffer     = utils.find_buffer_from_ls_by_name(line)
 
-    local buffer = utils.find_buffer_from_ls(cursor_pos)
-    helpers.focus_on_the_selected_buf(buffer)
+    if buffer ~= nil then
+      helpers.focus_on_the_selected_buf(buffer)
+    end
   end
 end
 

@@ -50,7 +50,7 @@ end
 M.populate_buffer = function(buf)
   local ls = vim.split(commands.ls(), "\n")
   helpers.reset_buffer(buf)
-  for index, line in ipairs(ls) do
+  for _, line in ipairs(ls) do
     local name = utils.extract_file_name_from_ls(line)
     if name ~= '' then
       vim.api.nvim_buf_set_lines(buf, 0, 0, false, { name })

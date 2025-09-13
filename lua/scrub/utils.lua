@@ -161,14 +161,16 @@ M.restore_buffers = function(config, save_file_path)
 
   local cur_data = data[cwd]
 
-  cur_data = cur_data:gsub("^'(.*)'$", "%1")
+  if cur_data ~= nil then
+    cur_data = cur_data:gsub("^'(.*)'$", "%1")
 
-  local lines = vim.split(cur_data, "\\n")
+    local lines = vim.split(cur_data, "\\n")
 
-  for _, line in ipairs(lines) do
-    local indicators = M.extract_all_from_ls(line)
-    if indicators["file"] ~= nil then
-      M.create_buf_from_indicators(indicators)
+    for _, line in ipairs(lines) do
+      local indicators = M.extract_all_from_ls(line)
+      if indicators["file"] ~= nil then
+        M.create_buf_from_indicators(indicators)
+      end
     end
   end
 end
