@@ -72,7 +72,7 @@ end
 M.find_buffer_from_ls_by_name = function(name)
   local ls = M.get_ls_all_lines()
   for _, value in ipairs(ls) do
-    if value:match(name) then
+    if string.find(value, name, 1, true) then
       local indicators = M.extract_all_from_ls(value)
       local bufnr = indicators["bufnr"]
       return bufnr
@@ -159,7 +159,10 @@ M.restore_buffers = function(config, save_file_path)
 
   local cwd = vim.fn.getcwd()
 
-  local cur_data = data[cwd]
+  local cur_data = nil
+  if data and data[cwd] then
+    cur_data = data[cwd]
+  end
 
   if cur_data ~= nil then
     cur_data = cur_data:gsub("^'(.*)'$", "%1")
