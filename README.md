@@ -1,4 +1,5 @@
-# scrub.nvim
+<img width="1000" height="400" alt="sccrub" src="https://github.com/user-attachments/assets/7d5fef47-93c5-47ce-bb3c-511d1193dee0" />
+
 
 A Neovim plugin inspired by `oil.nvim` that enhances buffer management by allowing users to easily close unwanted buffers and optionally save and restore the current buffer state, similar to tmux's resurrect.
 
