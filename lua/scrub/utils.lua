@@ -141,6 +141,14 @@ M.create_buf_from_indicators = function(indicators)
     local buf = vim.fn.bufadd(indicators["file"])
     vim.fn.bufload(buf)
     vim.bo[buf].buflisted = true
+
+    local filetype = vim.filetype.match({ buf = buf })
+
+    if filetype ~= "" then
+      vim.bo[buf].filetype = filetype
+    end
+
+    print(table.concat(vim.api.nvim_list_bufs()))
   end
 end
 
