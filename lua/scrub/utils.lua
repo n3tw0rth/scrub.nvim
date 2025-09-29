@@ -138,11 +138,17 @@ M.create_buf_from_indicators = function(indicators)
   --- NOTE: buffers will be always  listed as we only want to restore the buffers shown on :ls
   --- and also not scratch buffers, as chagnes on those are not saved and cannot recover again
   if (indicators["file"] ~= nil) then
-    local buf = vim.api.nvim_create_buf(true, false)
-    vim.api.nvim_buf_set_name(buf, indicators["file"])
-    vim.api.nvim_buf_call(buf, function()
-      vim.cmd("silent edit")
-    end)
+    local buf = vim.fn.bufadd(indicators["file"])
+    vim.fn.bufload(buf)
+    vim.bo[buf].buflisted = true
+
+    local filetype = vim.filetype.match({ buf = buf })
+
+    if filetype ~= "" then
+      vim.bo[buf].filetype = filetype
+    end
+
+    print(table.concat(vim.api.nvim_list_bufs()))
   end
 end
 
