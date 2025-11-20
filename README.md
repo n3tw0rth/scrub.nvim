@@ -2,8 +2,7 @@
 
 
 
-A Neovim plugin inspired by `oil.nvim` that enhances buffer management by allowing users to easily close unwanted buffers and optionally save and restore the current buffer state, similar to tmux's resurrect.
-
+oil.nvim inspired nvim plugin to manage buffers and persists open buffers when you close nvim.
 
 ## Features
 
