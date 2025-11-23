@@ -1,5 +1,4 @@
-<img width="1000" height="400" alt="Scrub" src="https://github.com/user-attachments/assets/ad5db4ff-b20b-43b7-b550-13456e60bab3" />
-
+<img width="1000" height="400" alt="Scrub" src="https://github.com/user-attachments/assets/a2705eb1-7602-4b02-87e2-0736c51623a4" />
 
 
 oil.nvim inspired nvim plugin to manage buffers and persists open buffers when you close nvim.
